@@ -3,6 +3,7 @@ import { CategoryBadge } from '@/components/topic/CategoryBadge'
 import { VoteButton } from '@/components/topic/VoteButton'
 import { ReplyList } from '@/components/reply/ReplyList'
 import { ReplyForm } from '@/components/reply/ReplyForm'
+import { TopicActions } from '@/components/topic/TopicActions'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { formatDistanceToNow } from 'date-fns'
 import { ja } from 'date-fns/locale'
@@ -86,6 +87,13 @@ export default async function TopicDetailPage({
         </CardHeader>
         <CardContent>
           <p className="whitespace-pre-wrap text-lg">{topic.content}</p>
+
+          {/* 投稿者本人のみ編集・削除ボタンを表示 */}
+          {user && user.id === topic.user_id && (
+            <div className="mt-6 pt-6 border-t">
+              <TopicActions topicId={topic.id} />
+            </div>
+          )}
         </CardContent>
       </Card>
 
