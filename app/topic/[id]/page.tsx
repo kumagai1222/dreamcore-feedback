@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase-server'
 import { CategoryBadge } from '@/components/topic/CategoryBadge'
+import { StatusBadge } from '@/components/topic/StatusBadge'
+import { StatusManager } from '@/components/topic/StatusManager'
 import { VoteButton } from '@/components/topic/VoteButton'
 import { ReplyList } from '@/components/reply/ReplyList'
 import { ReplyForm } from '@/components/reply/ReplyForm'
@@ -8,6 +10,9 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { formatDistanceToNow } from 'date-fns'
 import { ja } from 'date-fns/locale'
 import { notFound } from 'next/navigation'
+
+// 運営メールアドレス（環境変数で管理することを推奨）
+const ADMIN_EMAIL = 'rimbaud18911110@gmail.com'
 
 export default async function TopicDetailPage({
   params,
@@ -77,6 +82,7 @@ export default async function TopicDetailPage({
             </div>
             <div className="flex items-center gap-2">
               <CategoryBadge category={topic.category} />
+              <StatusBadge status={topic.status} />
               <VoteButton
                 topicId={topic.id}
                 initialVoteCount={topic.vote_count}
@@ -87,6 +93,13 @@ export default async function TopicDetailPage({
         </CardHeader>
         <CardContent>
           <p className="whitespace-pre-wrap text-lg">{topic.content}</p>
+
+          {/* 運営のみステータス管理を表示 */}
+          {user && user.email === ADMIN_EMAIL && (
+            <div className="mt-6 pt-6 border-t">
+              <StatusManager topicId={topic.id} currentStatus={topic.status} />
+            </div>
+          )}
 
           {/* 投稿者本人のみ編集・削除ボタンを表示 */}
           {user && user.id === topic.user_id && (

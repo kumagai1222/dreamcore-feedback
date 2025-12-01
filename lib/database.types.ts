@@ -15,6 +15,7 @@ export interface Database {
           title: string
           content: string
           category: 'bug_report' | 'feature_request' | 'feedback' | 'discussion'
+          status: 'unconfirmed' | 'in_progress' | 'completed'
           user_id: string
           vote_count: number
           created_at: string
@@ -25,6 +26,7 @@ export interface Database {
           title: string
           content: string
           category: 'bug_report' | 'feature_request' | 'feedback' | 'discussion'
+          status?: 'unconfirmed' | 'in_progress' | 'completed'
           user_id: string
           vote_count?: number
           created_at?: string
@@ -35,6 +37,7 @@ export interface Database {
           title?: string
           content?: string
           category?: 'bug_report' | 'feature_request' | 'feedback' | 'discussion'
+          status?: 'unconfirmed' | 'in_progress' | 'completed'
           user_id?: string
           vote_count?: number
           created_at?: string

@@ -1,6 +1,5 @@
 import { createClient } from '@/lib/supabase-server'
-import { TopicCard } from '@/components/topic/TopicCard'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { TopicList } from '@/components/topic/TopicList'
 
 export default async function Home() {
   const supabase = await createClient()
@@ -26,12 +25,6 @@ export default async function Home() {
     userVotes = votes?.map((v) => v.topic_id) || []
   }
 
-  // カテゴリ別にフィルタリング
-  const filterByCategory = (category?: string) => {
-    if (!category || category === 'all') return topics || []
-    return topics?.filter((topic) => topic.category === category) || []
-  }
-
   return (
     <div className="space-y-6">
       <div>
@@ -41,71 +34,7 @@ export default async function Home() {
         </p>
       </div>
 
-      <Tabs defaultValue="all" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="all">すべて</TabsTrigger>
-          <TabsTrigger value="bug_report">Bug Report</TabsTrigger>
-          <TabsTrigger value="feature_request">Feature Request</TabsTrigger>
-          <TabsTrigger value="feedback">Feedback</TabsTrigger>
-          <TabsTrigger value="discussion">Discussion</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="all" className="space-y-4 mt-6">
-          {filterByCategory('all').map((topic) => (
-            <TopicCard
-              key={topic.id}
-              topic={topic}
-              hasVoted={userVotes.includes(topic.id)}
-            />
-          ))}
-        </TabsContent>
-
-        <TabsContent value="bug_report" className="space-y-4 mt-6">
-          {filterByCategory('bug_report').map((topic) => (
-            <TopicCard
-              key={topic.id}
-              topic={topic}
-              hasVoted={userVotes.includes(topic.id)}
-            />
-          ))}
-        </TabsContent>
-
-        <TabsContent value="feature_request" className="space-y-4 mt-6">
-          {filterByCategory('feature_request').map((topic) => (
-            <TopicCard
-              key={topic.id}
-              topic={topic}
-              hasVoted={userVotes.includes(topic.id)}
-            />
-          ))}
-        </TabsContent>
-
-        <TabsContent value="feedback" className="space-y-4 mt-6">
-          {filterByCategory('feedback').map((topic) => (
-            <TopicCard
-              key={topic.id}
-              topic={topic}
-              hasVoted={userVotes.includes(topic.id)}
-            />
-          ))}
-        </TabsContent>
-
-        <TabsContent value="discussion" className="space-y-4 mt-6">
-          {filterByCategory('discussion').map((topic) => (
-            <TopicCard
-              key={topic.id}
-              topic={topic}
-              hasVoted={userVotes.includes(topic.id)}
-            />
-          ))}
-        </TabsContent>
-      </Tabs>
-
-      {(!topics || topics.length === 0) && (
-        <div className="text-center py-12 text-muted-foreground">
-          まだ投稿がありません。最初の投稿をしてみましょう！
-        </div>
-      )}
+      <TopicList topics={topics || []} userVotes={userVotes} />
     </div>
   )
 }

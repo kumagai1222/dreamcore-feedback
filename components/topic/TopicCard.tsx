@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { CategoryBadge } from './CategoryBadge'
+import { StatusBadge } from './StatusBadge'
 import { VoteButton } from './VoteButton'
 import { formatDistanceToNow } from 'date-fns'
 import { ja } from 'date-fns/locale'
@@ -10,6 +11,7 @@ interface TopicCardProps {
     id: string
     title: string
     category: 'bug_report' | 'feature_request' | 'feedback' | 'discussion'
+    status?: 'unconfirmed' | 'in_progress' | 'completed'
     vote_count: number
     created_at: string
     profiles: {
@@ -47,6 +49,7 @@ export function TopicCard({ topic, hasVoted = false }: TopicCardProps) {
           </div>
           <div className="flex items-center gap-2">
             <CategoryBadge category={topic.category} />
+            <StatusBadge status={topic.status} />
             <VoteButton
               topicId={topic.id}
               initialVoteCount={topic.vote_count}
