@@ -2,6 +2,7 @@
 
 import { TopicCard } from '@/components/topic/TopicCard'
 import { SearchBar } from '@/components/search/SearchBar'
+import { SortSelector, SortOption } from '@/components/topic/SortSelector'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Select,
@@ -19,6 +20,7 @@ interface Topic {
   category: 'bug_report' | 'feature_request' | 'feedback' | 'discussion'
   status?: 'unconfirmed' | 'in_progress' | 'completed'
   vote_count: number
+  view_count: number
   created_at: string
   profiles: {
     display_name: string | null
@@ -34,18 +36,47 @@ interface TopicListProps {
 export function TopicList({ topics, userVotes }: TopicListProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
+  const [sortOption, setSortOption] = useState<SortOption>('created_at_desc')
 
-  // 検索フィルタリング
+  // 検索フィルタリング & ソート
   const filteredTopics = useMemo(() => {
-    if (!searchQuery.trim()) return topics
+    let result = topics
 
-    const query = searchQuery.toLowerCase()
-    return topics.filter(
-      (topic) =>
-        topic.title.toLowerCase().includes(query) ||
-        topic.content.toLowerCase().includes(query)
-    )
-  }, [topics, searchQuery])
+    // 検索フィルタ
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase()
+      result = result.filter(
+        (topic) =>
+          topic.title.toLowerCase().includes(query) ||
+          topic.content.toLowerCase().includes(query)
+      )
+    }
+
+    // ソート
+    const sorted = [...result]
+    switch (sortOption) {
+      case 'vote_count':
+        sorted.sort((a, b) => b.vote_count - a.vote_count)
+        break
+      case 'view_count':
+        sorted.sort((a, b) => b.view_count - a.view_count)
+        break
+      case 'created_at_desc':
+        sorted.sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        )
+        break
+      case 'created_at_asc':
+        sorted.sort(
+          (a, b) =>
+            new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        )
+        break
+    }
+
+    return sorted
+  }, [topics, searchQuery, sortOption])
 
   // カテゴリ別にフィルタリング
   const filterByCategory = (category?: string) => {
@@ -67,11 +98,16 @@ export function TopicList({ topics, userVotes }: TopicListProps) {
 
   return (
     <div className="space-y-6">
-      {/* 検索バー */}
-      <SearchBar
-        onSearch={handleSearch}
-        placeholder="タイトルまたは本文で検索..."
-      />
+      {/* 検索バー & ソート */}
+      <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex-1">
+          <SearchBar
+            onSearch={handleSearch}
+            placeholder="タイトルまたは本文で検索..."
+          />
+        </div>
+        <SortSelector value={sortOption} onChange={setSortOption} />
+      </div>
 
       {/* 検索結果の件数表示 */}
       {searchQuery && (

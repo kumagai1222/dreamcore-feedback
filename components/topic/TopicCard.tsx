@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { CategoryBadge } from './CategoryBadge'
 import { StatusBadge } from './StatusBadge'
 import { VoteButton } from './VoteButton'
+import { Eye } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { ja } from 'date-fns/locale'
 
@@ -13,6 +14,7 @@ interface TopicCardProps {
     category: 'bug_report' | 'feature_request' | 'feedback' | 'discussion'
     status?: 'unconfirmed' | 'in_progress' | 'completed'
     vote_count: number
+    view_count: number
     created_at: string
     profiles: {
       display_name: string | null
@@ -47,6 +49,11 @@ export function TopicCard({ topic, hasVoted = false }: TopicCardProps) {
                   locale: ja,
                 })}
               </span>
+              <span>•</span>
+              <span className="flex items-center gap-1">
+                <Eye className="h-3 w-3" />
+                {topic.view_count}
+              </span>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -75,6 +82,11 @@ export function TopicCard({ topic, hasVoted = false }: TopicCardProps) {
                 addSuffix: true,
                 locale: ja,
               })}
+            </span>
+            <span>•</span>
+            <span className="flex items-center gap-1 whitespace-nowrap">
+              <Eye className="h-3 w-3" />
+              {topic.view_count}
             </span>
           </div>
           <div className="flex items-center gap-2 flex-wrap">

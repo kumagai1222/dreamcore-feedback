@@ -3,6 +3,7 @@ import { CategoryBadge } from '@/components/topic/CategoryBadge'
 import { StatusBadge } from '@/components/topic/StatusBadge'
 import { StatusManager } from '@/components/topic/StatusManager'
 import { VoteButton } from '@/components/topic/VoteButton'
+import { ViewCounter } from '@/components/topic/ViewCounter'
 import { ReplyList } from '@/components/reply/ReplyList'
 import { ReplyForm } from '@/components/reply/ReplyForm'
 import { TopicActions } from '@/components/topic/TopicActions'
@@ -60,6 +61,9 @@ export default async function TopicDetailPage({
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
+      {/* 閲覧数カウンター */}
+      <ViewCounter topicId={topic.id} />
+
       {/* トピック詳細 */}
       <Card>
         <CardHeader>
